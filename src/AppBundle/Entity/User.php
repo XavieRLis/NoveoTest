@@ -4,7 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
-
+use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * User
  *
@@ -54,6 +54,7 @@ class User
      * @var \DateTime
      * @JMS\Type("datetime")
      * @ORM\Column(name="createdAt", type="datetime", nullable = true)
+     * @Gedmo\Timestampable(on="create")
      */
     private $createdAt;
 
@@ -64,14 +65,6 @@ class User
      *
      */
     private $group;
-
-
-
-    public function __construct()
-    {
-        $this->createdAt = new \DateTime();
-        $this->state = false;
-    }
 
     /**
      * Get id
