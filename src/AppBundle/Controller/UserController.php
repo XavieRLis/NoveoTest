@@ -47,7 +47,7 @@ class UserController extends Controller
         $em->persist($entity);
         $em->flush();
         
-        return $this->sendResponse(null, 200, array(), false);
+        return $this->sendResponse(null, 201, array(), false);
     }
 
     /**
@@ -77,7 +77,7 @@ class UserController extends Controller
         $em->persist($entity);
         $em->flush();
         
-        return $this->sendResponse();
+        return $this->sendResponse(null, 200, array(), false);
     }
     
     private function sendResponse($data = null, $status = 200, $headers = array(), $json = true)
