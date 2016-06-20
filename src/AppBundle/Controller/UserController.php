@@ -50,7 +50,7 @@ class UserController extends Controller
 
     /**
      * @param User $user
-     * @return Response
+     * @return JsonResponse
      * @Route("/{id}", name="users_show")
      */
     public function showAction(User $user)
