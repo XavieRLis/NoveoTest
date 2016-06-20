@@ -3,18 +3,11 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Group;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use AppBundle\Entity\User;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 
 /**
  * @Route("/groups", name="groups")
@@ -23,29 +16,18 @@ class GroupController extends Controller
 {
 
     /**
-     * @var EntityRepository
-     */
-    private $userRepo;
-    /**
-     * @var Serializer
-     */
-    private $serializer;
-
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
      * @Route("/", name="groups_index")
      * @Method("GET")
      * @return Response
      */
     public function indexAction()
     {
-        $entities = $this->userRepo->findAll();       
+        $repository = $this->getDoctrine()->getRepository('AppBundle:Group');
+        $serializer = $this->get('jms_serializer');
 
-        return new Response($this->serializer->serialize($entities, 'json'));
+        $entities = $repository->findAll();
+
+        return new Response($serializer->serialize($entities, 'json'));
     }
 
     /**
@@ -55,10 +37,12 @@ class GroupController extends Controller
      */
     public function createAction(Request $request)
     {
+        $serializer = $this->get('jms_serializer');
+        $em = $this->getDoctrine()->getManager();
         
-        $entity = $this->serializer->deserialize($request->getContent(), Group::class, 'json');
-        $this->em->persist($entity);
-        $this->em->flush($entity);        
+        $entity = $serializer->deserialize($request->getContent(), Group::class, 'json');
+        $em->persist($entity);
+        $em->flush();
         
         return new Response();
     }
@@ -70,10 +54,12 @@ class GroupController extends Controller
      */
     public function showAction(Group $group)
     {
-       
-        $entity = $this->serializer->serialize($group, 'json');
+        $serializer = $this->get('jms_serializer');
+
+        $entity = $serializer->serialize($group, 'json');
         return new Response($entity);
     }
+
     /**
      * @param Request $request
      * @return Response
@@ -81,18 +67,12 @@ class GroupController extends Controller
      */
     public function updateAction(Request $request)
     {
-        $entity = $this->serializer->deserialize($request->getContent(), Group::class, 'json');
-        $this->em->persist($entity);
-        $this->em->flush($entity);
+        $serializer = $this->get('jms_serializer');
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $serializer->deserialize($request->getContent(), Group::class, 'json');
+        $em->persist($entity);
+        $em->flush();
         return new Response();
-    }
-
-    public function setContainer(ContainerInterface $container = null)
-    {
-        parent::setContainer($container);
-        $this->userRepo = $this->getDoctrine()->getRepository('AppBundle:Group');
-        $this->serializer = $this->get('jms_serializer');
-
-        $this->em = $this->getDoctrine()->getEntityManager();
     }
 }

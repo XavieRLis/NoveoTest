@@ -20,41 +20,34 @@ use Symfony\Component\Serializer\Serializer;
  */
 class UserController extends Controller
 {
-
-    /**
-     * @var EntityRepository
-     */
-    private $userRepo;
-    /**
-     * @var Serializer
-     */
-    private $serializer;
-
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
     /**
      * @Route("/", name="users_index")
      * @Method("GET")
+     * @return Response
      */
     public function indexAction()
     {
-        $entities = $this->userRepo->findAll();       
+        $serializer = $this->get('jms_serializer');
+        $repository =  $this->getDoctrine()->getRepository('AppBundle:User');
+        $entities = $repository->findAll();       
 
-        return new Response($this->serializer->serialize($entities, 'json'));
+        return new Response($serializer->serialize($entities, 'json'));
     }
 
     /**
+     * @param Request $request
+     * @return Response
      * @Route("/create", name="users_create")     
      */
     public function createAction(Request $request)
     {
-        
-        $entity = $this->serializer->deserialize($request->getContent(), User::class, 'json');
-        $this->em->persist($entity);
-        $this->em->flush($entity);        
+        $em  = $this->getDoctrine()->getManager();
+        $serializer = $this->get('jms_serializer');
+
+        $entity = $serializer->deserialize($request->getContent(), User::class, 'json');
+
+        $em->persist($entity);
+        $em->flush();
         
         return new Response();
     }
@@ -66,31 +59,24 @@ class UserController extends Controller
      */
     public function showAction(User $user)
     {
-       
-        $entity = $this->serializer->serialize($user, 'json');
+        $serializer = $this->get('jms_serializer');
+        $entity = $serializer->serialize($user, 'json');
         return new Response($entity);
     }
     /**
-     * @param User $user
+     * @param Request $request 
      * @return Response
      * @Route("/{id}/modify", name="users_modify")
      */
-    public function updateAction(Request $request, User $user)
+    public function updateAction(Request $request)
     {
-
+        $serializer = $this->get('jms_serializer');
+        $em  = $this->getDoctrine()->getManager();
         
-        $entity = $this->serializer->deserialize($request->getContent(), User::class, 'json');         
-        $this->em->persist($entity);
-        $this->em->flush($entity);
+        $entity = $serializer->deserialize($request->getContent(), User::class, 'json');
+        $em->persist($entity);
+        $em->flush();
+        
         return new Response();
-    }
-
-    public function setContainer(ContainerInterface $container = null)
-    {
-        parent::setContainer($container);
-        $this->userRepo = $this->getDoctrine()->getRepository('AppBundle:User');
-        $this->serializer = $this->get('jms_serializer');
-
-        $this->em = $this->getDoctrine()->getEntityManager();
     }
 }
