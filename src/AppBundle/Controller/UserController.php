@@ -2,18 +2,14 @@
 
 namespace AppBundle\Controller;
 
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use AppBundle\Entity\User;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 
 /**
  * @Route("/users", name="users")
@@ -23,7 +19,7 @@ class UserController extends Controller
     /**
      * @Route("/", name="users_index")
      * @Method("GET")
-     * @return Response
+     * @return JsonResponse
      */
     public function indexAction()
     {
@@ -31,12 +27,12 @@ class UserController extends Controller
         $repository =  $this->getDoctrine()->getRepository('AppBundle:User');
         $entities = $repository->findAll();       
 
-        return new Response($serializer->serialize($entities, 'json'));
+        return new JsonResponse($serializer->serialize($entities, 'json'));
     }
 
     /**
      * @param Request $request
-     * @return Response
+     * @return JsonResponse
      * @Route("/create", name="users_create")     
      */
     public function createAction(Request $request)
@@ -49,7 +45,7 @@ class UserController extends Controller
         $em->persist($entity);
         $em->flush();
         
-        return new Response();
+        return new JsonResponse();
     }
 
     /**
@@ -61,11 +57,11 @@ class UserController extends Controller
     {
         $serializer = $this->get('jms_serializer');
         $entity = $serializer->serialize($user, 'json');
-        return new Response($entity);
+        return new JsonResponse($entity);
     }
     /**
      * @param Request $request 
-     * @return Response
+     * @return JsonResponse
      * @Route("/{id}/modify", name="users_modify")
      */
     public function updateAction(Request $request)
@@ -77,6 +73,6 @@ class UserController extends Controller
         $em->persist($entity);
         $em->flush();
         
-        return new Response();
+        return new JsonResponse();
     }
 }

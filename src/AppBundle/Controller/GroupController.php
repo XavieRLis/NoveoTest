@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @Route("/groups", name="groups")
@@ -18,7 +18,7 @@ class GroupController extends Controller
     /**
      * @Route("/", name="groups_index")
      * @Method("GET")
-     * @return Response
+     * @return JsonResponse
      */
     public function indexAction()
     {
@@ -27,13 +27,13 @@ class GroupController extends Controller
 
         $entities = $repository->findAll();
 
-        return new Response($serializer->serialize($entities, 'json'));
+        return new JsonResponse($serializer->serialize($entities, 'json'));
     }
 
     /**
      * @param Request $request
      * @Route("/create", name="groups_create")
-     * @return Response
+     * @return JsonResponse
      */
     public function createAction(Request $request)
     {
@@ -44,12 +44,12 @@ class GroupController extends Controller
         $em->persist($entity);
         $em->flush();
         
-        return new Response();
+        return new JsonResponse();
     }
 
     /**
      * @param Group $group
-     * @return Response
+     * @return JsonResponse
      * @Route("/{id}", name="groups_show")
      */
     public function showAction(Group $group)
@@ -57,12 +57,12 @@ class GroupController extends Controller
         $serializer = $this->get('jms_serializer');
 
         $entity = $serializer->serialize($group, 'json');
-        return new Response($entity);
+        return new JsonResponse($entity);
     }
 
     /**
      * @param Request $request
-     * @return Response
+     * @return JsonResponse
      * @Route("/{id}/modify", name="groups_modify")
      */
     public function updateAction(Request $request)
@@ -73,6 +73,6 @@ class GroupController extends Controller
         $entity = $serializer->deserialize($request->getContent(), Group::class, 'json');
         $em->persist($entity);
         $em->flush();
-        return new Response();
+        return new JsonResponse();
     }
 }
