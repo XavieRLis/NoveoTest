@@ -16,7 +16,7 @@ class Group
 {
     /**
      * @var int
-     *
+     * @JMS\Groups({"list", "details"})
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -26,12 +26,14 @@ class Group
     /**
      * @var string
      * @JMS\Type("string")
+     * @JMS\Groups({"list", "details"})
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
 
     /**
      * @JMS\Type("ArrayCollection<AppBundle\Entity\User>")
+     * @JMS\Groups({"details"})
      * @ORM\OneToMany(targetEntity="User", mappedBy="group", cascade={"persist"})
      */
     private $users;
@@ -114,5 +116,10 @@ class Group
     public function getUsers()
     {
         return $this->users;
+    }
+
+    public function __toString()
+    {
+       return $this->name;
     }
 }

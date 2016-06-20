@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use JMS\Serializer\SerializationContext;
 
 /**
  * @Route("/groups", name="groups")
@@ -27,7 +28,7 @@ class GroupController extends Controller
 
         $entities = $repository->findAll();
 
-        return $this->sendResponse($serializer->serialize($entities, 'json'));
+        return $this->sendResponse($serializer->serialize($entities, 'json', SerializationContext::create()->setGroups(array('list'))));
     }
 
     /**
@@ -45,7 +46,7 @@ class GroupController extends Controller
         $em->persist($entity);
         $em->flush();
         
-        return $this->sendResponse();
+        return $this->sendResponse(null, 201, array(), false);
     }
 
     /**
@@ -58,7 +59,7 @@ class GroupController extends Controller
     {
         $serializer = $this->get('jms_serializer');
 
-        $entity = $serializer->serialize($group, 'json');
+        $entity = $serializer->serialize($group, 'json', SerializationContext::create()->setGroups(array('list')));
         return $this->sendResponse($entity);
     }
 
@@ -76,7 +77,7 @@ class GroupController extends Controller
         $entity = $serializer->deserialize($request->getContent(), Group::class, 'json');
         $em->persist($entity);
         $em->flush();
-        return $this->sendResponse();
+        return $this->sendResponse(null, 200, array(), false);
     }
 
     private function sendResponse($data = null, $status = 200, $headers = array(), $json = true)

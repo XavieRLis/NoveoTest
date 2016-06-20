@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 
+use JMS\Serializer\SerializationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -27,7 +28,7 @@ class UserController extends Controller
         $repository =  $this->getDoctrine()->getRepository('AppBundle:User');
         $entities = $repository->findAll();       
 
-        return $this->sendResponse($serializer->serialize($entities, 'json'));
+        return $this->sendResponse($serializer->serialize($entities, 'json', SerializationContext::create()->setGroups(array('list'))));
     }
 
     /**
@@ -46,7 +47,7 @@ class UserController extends Controller
         $em->persist($entity);
         $em->flush();
         
-        return $this->sendResponse();
+        return $this->sendResponse(null, 200, array(), false);
     }
 
     /**
@@ -58,7 +59,7 @@ class UserController extends Controller
     public function showAction(User $user)
     {
         $serializer = $this->get('jms_serializer');
-        $entity = $serializer->serialize($user, 'json');
+        $entity = $serializer->serialize($user, 'json', SerializationContext::create()->setGroups(array('details')));
         return $this->sendResponse($entity);
     }
     /**

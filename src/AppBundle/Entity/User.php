@@ -10,12 +10,13 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *
  * @ORM\Table(name="user")
  * @ORM\Entity()
+ *
  */
 class User
 {
     /**
      * @var int
-     *
+     * @JMS\Groups({"list", "details"})
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -25,27 +26,32 @@ class User
     /**
      * @var string
      * @JMS\Type("string")
+     * @JMS\Groups({"list", "details"})
      * @ORM\Column(name="firstName", type="string", length=255)
+     *
      */
     private $firstName;
 
     /**
      * @var string
-     *@JMS\Type("string")
+     * @JMS\Type("string")
+     * @JMS\Groups({"details"})
      * @ORM\Column(name="lastName", type="string", length=255)
      */
     private $lastName;
 
     /**
      * @var string
-     *@JMS\Type("string")
+     * @JMS\Type("string")
+     * @JMS\Groups({"list", "details"})
      * @ORM\Column(name="email", type="string", length=255, unique=true)
      */
     private $email;
 
     /**
      * @var bool
-     *  @JMS\Type("boolean")
+     * @JMS\Type("boolean")
+     * @JMS\Groups({"details"})
      * @ORM\Column(name="state", type="boolean", nullable = true)
      */
     private $state = false;
@@ -53,6 +59,7 @@ class User
     /**
      * @var \DateTime
      * @JMS\Type("DateTime")
+     * @JMS\Groups({"list", "details"})
      * @ORM\Column(name="createdAt", type="datetime", nullable = true)
      * @Gedmo\Timestampable(on="create")
      */
@@ -60,6 +67,7 @@ class User
 
     /**
      * @JMS\Type("AppBundle\Entity\Group")
+     * @JMS\Groups({"details"})
      * @ORM\ManyToOne(targetEntity="Group", inversedBy="users", cascade={"persist"})
      * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
      *
@@ -218,5 +226,10 @@ class User
     public function getGroup()
     {
         return $this->group;
+    }
+    
+    public function __toString()
+    {
+        return $this->firstName;
     }
 }
