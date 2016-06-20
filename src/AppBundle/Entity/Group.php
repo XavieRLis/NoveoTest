@@ -97,10 +97,13 @@ class Group
      * Remove user
      *
      * @param User $user
+     * @return Group
      */
     public function removeUser(User $user)
     {
         $this->users->removeElement($user);
+
+        return $this;
     }
 
     /**
