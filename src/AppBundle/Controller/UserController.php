@@ -33,7 +33,8 @@ class UserController extends Controller
     /**
      * @param Request $request
      * @return JsonResponse
-     * @Route("/create", name="users_create")     
+     * @Route("/create", name="users_create") 
+     * @Method("POST")    
      */
     public function createAction(Request $request)
     {
@@ -52,6 +53,7 @@ class UserController extends Controller
      * @param User $user
      * @return JsonResponse
      * @Route("/{id}", name="users_show")
+     * @Method("GET")
      */
     public function showAction(User $user)
     {
@@ -63,6 +65,7 @@ class UserController extends Controller
      * @param Request $request 
      * @return JsonResponse
      * @Route("/{id}/modify", name="users_modify")
+     * @Method({"PUT", "PATCH"})
      */
     public function updateAction(Request $request)
     {

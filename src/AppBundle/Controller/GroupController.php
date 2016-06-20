@@ -34,6 +34,7 @@ class GroupController extends Controller
      * @param Request $request
      * @Route("/create", name="groups_create")
      * @return JsonResponse
+     * @Method("POST")
      */
     public function createAction(Request $request)
     {
@@ -51,6 +52,7 @@ class GroupController extends Controller
      * @param Group $group
      * @return JsonResponse
      * @Route("/{id}", name="groups_show")
+     * @Method("GET")
      */
     public function showAction(Group $group)
     {
@@ -64,6 +66,7 @@ class GroupController extends Controller
      * @param Request $request
      * @return JsonResponse
      * @Route("/{id}/modify", name="groups_modify")
+     * @Method({"PUT", "PATCH"})
      */
     public function updateAction(Request $request)
     {
