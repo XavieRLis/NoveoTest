@@ -52,7 +52,7 @@ class User
 
     /**
      * @var \DateTime
-     * @JMS\Type("datetime")
+     * @JMS\Type("DateTime")
      * @ORM\Column(name="createdAt", type="datetime", nullable = true)
      * @Gedmo\Timestampable(on="create")
      */

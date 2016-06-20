@@ -27,7 +27,7 @@ class UserController extends Controller
         $repository =  $this->getDoctrine()->getRepository('AppBundle:User');
         $entities = $repository->findAll();       
 
-        return new JsonResponse($serializer->serialize($entities, 'json'));
+        return $this->sendResponse($serializer->serialize($entities, 'json'));
     }
 
     /**
@@ -45,7 +45,7 @@ class UserController extends Controller
         $em->persist($entity);
         $em->flush();
         
-        return new JsonResponse();
+        return $this->sendResponse();
     }
 
     /**
@@ -57,7 +57,7 @@ class UserController extends Controller
     {
         $serializer = $this->get('jms_serializer');
         $entity = $serializer->serialize($user, 'json');
-        return new JsonResponse($entity);
+        return $this->sendResponse($entity);
     }
     /**
      * @param Request $request 
@@ -73,6 +73,11 @@ class UserController extends Controller
         $em->persist($entity);
         $em->flush();
         
-        return new JsonResponse();
+        return $this->sendResponse();
+    }
+    
+    private function sendResponse($data = null, $status = 200, $headers = array(), $json = true)
+    {
+        return new JsonResponse($data, $status, $headers, $json);
     }
 }

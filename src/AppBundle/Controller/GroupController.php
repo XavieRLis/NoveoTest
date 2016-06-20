@@ -27,7 +27,7 @@ class GroupController extends Controller
 
         $entities = $repository->findAll();
 
-        return new JsonResponse($serializer->serialize($entities, 'json'));
+        return $this->sendResponse($serializer->serialize($entities, 'json'));
     }
 
     /**
@@ -44,7 +44,7 @@ class GroupController extends Controller
         $em->persist($entity);
         $em->flush();
         
-        return new JsonResponse();
+        return $this->sendResponse();
     }
 
     /**
@@ -57,7 +57,7 @@ class GroupController extends Controller
         $serializer = $this->get('jms_serializer');
 
         $entity = $serializer->serialize($group, 'json');
-        return new JsonResponse($entity);
+        return $this->sendResponse($entity);
     }
 
     /**
@@ -73,6 +73,11 @@ class GroupController extends Controller
         $entity = $serializer->deserialize($request->getContent(), Group::class, 'json');
         $em->persist($entity);
         $em->flush();
-        return new JsonResponse();
+        return $this->sendResponse();
+    }
+
+    private function sendResponse($data = null, $status = 200, $headers = array(), $json = true)
+    {
+        return new JsonResponse($data, $status, $headers, $json);
     }
 }
